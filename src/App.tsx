@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import SearchBar from "./components/searchBar/SearchBar";
-import fetchImages from "./images-api";
+import fetchImages, { FetchImagesResponse } from "./images-api";
+import { Image } from "./types";
 import ImageGallery from "./components/imageGallery/ImageGallery";
 import Loader from "./components/loader/Loader";
 import ErrorMessage from "./components/errorMessage/ErrorMessage";
@@ -9,20 +10,20 @@ import ImageModal from "./components/imageModal/ImageModal";
 import "./App.css";
 
 function App() {
-  const [query, setQuery] = useState("");
-  const [imgArray, setImgArray] = useState([]);
-  const [pageCurr, setPageCurr] = useState(1);
-  const [showBtn, setShowBtn] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalPhoto, setModalPhoto] = useState(null);
+  const [query, setQuery] = useState<string>("");
+  const [imgArray, setImgArray] = useState<Image[]>([]);
+  const [pageCurr, setPageCurr] = useState<number>(1);
+  const [showBtn, setShowBtn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalPhoto, setModalPhoto] = useState<Image | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await fetchImages(query, pageCurr);
+        const data: FetchImagesResponse = await fetchImages(query, pageCurr);
         if (pageCurr === 1) {
           setImgArray(data.results);
         } else {
@@ -44,7 +45,7 @@ function App() {
     fetchData();
   }, [query, pageCurr]);
 
-  const handleSearch = (query) => {
+  const handleSearch = (query: string) => {
     setQuery(query);
     setPageCurr(1);
   };
@@ -53,7 +54,7 @@ function App() {
     setPageCurr(pageCurr + 1);
   };
 
-  function openModal(image) {
+  function openModal(image: Image) {
     setModalPhoto(image);
     setIsModalOpen(true);
   }
